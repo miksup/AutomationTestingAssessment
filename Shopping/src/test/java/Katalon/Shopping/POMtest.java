@@ -40,9 +40,8 @@ public class POMtest {
 		}
 		
 		@After
-		public void teardown() throws InterruptedException {
+		public void teardown() {
 			
-			Thread.sleep(3000);
 			driver.close();
 			
 		}
@@ -53,7 +52,7 @@ public class POMtest {
 			report.flush();
 			
 		}
-
+		
 		@Test
 		public void goodSearch() throws Exception {
 			
@@ -83,7 +82,7 @@ public class POMtest {
 			assertFalse(0 == results.resultTotal());
 			
 		}
-
+		
 		@Test
 		public void badSearch() throws Exception {
 			
@@ -114,73 +113,6 @@ public class POMtest {
 			
 		}
 
-		@Test
-		public void byListGood() throws Exception {
-			
-			test = report.startTest("By List - Good Query");
-			driver.get("http://automationpractice.com/index.php");
-			test.log(LogStatus.INFO, "Site Opened");
-			
-			HomePage home = PageFactory.initElements(driver, HomePage.class);
-			SearchResults results = PageFactory.initElements(driver, SearchResults.class);
-			
-			home.query("Dress");
-			home.submission();
-			test.log(LogStatus.INFO, "Good query inserted and submitted");
-						
-			if(!results.listElements.isEmpty()) {
-				
-				test.log(LogStatus.PASS, "Test Passed - Query recognised; Returns some results");
-				test.log(LogStatus.INFO, "number of clothing items: " + results.listElements.size());
-				help.screenshot(driver);
-				
-			} else {
-				
-				test.log(LogStatus.FAIL, "");
-				
-			}
-			
-			report.endTest(test);
-			assertFalse(results.listElements.isEmpty());
-			
-		}
-		
-		@Test public void copyAndPaste() throws Exception {
-			
-			test = report.startTest("Copy and Paste");
-			driver.get("http://automationpractice.com/index.php");
-			test.log(LogStatus.INFO, "Site Opened");
-			
-			HomePage home = PageFactory.initElements(driver, HomePage.class);
-			SearchResults results = PageFactory.initElements(driver, SearchResults.class);
-			PrintDress page = PageFactory.initElements(driver, PrintDress.class);
-			
-			home.query("Dress");
-			home.submission();
-			test.log(LogStatus.INFO, "Good query inserted and submitted");
-			
-			String compare = results.listElements.get(0).getText();
-			results.hovering(driver);
-			test.log(LogStatus.INFO, "Hovers over specified web element which reveals additional webelements and options; "
-					+ "clicks previously hidden object 'more' and loads next page");
-			
-			page.selecting(driver);
-			test.log(LogStatus.INFO, "Selects information about product; copies it;"
-					+ "pastes in search bar and searches for it");
-			
-			
-			if (compare.equals(results.listElements.get(0).getText())) {
-				
-				test.log(LogStatus.PASS, "Search returned expected result");
-				
-			} else {
-				
-				test.log(LogStatus.FAIL, "Search returned unexpected result");
-				
-			}
-			
-			report.endTest(test);
-			assertTrue(compare.equals(results.listElements.get(0).getText()));
-		}
+
 	
 }

@@ -1,14 +1,10 @@
 package Katalon.demoSite;
 
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.*;
@@ -109,33 +105,35 @@ public class POMtest {
 		AddUser newUser = PageFactory.initElements(driver, AddUser.class);
 		Login log = PageFactory.initElements(driver, Login.class);
 		
-		FileInputStream file = null;
-		try {
-			
-			file = new FileInputStream(Constants.Path_TestData + Constants.File_TestData); 
+		Exceltation xL = new Exceltation();
+		xL.setExcelFile(Constants.Path_TestData + Constants.File_TestData, 0);
+
+		//		FileInputStream file = null;
+//		try {
+//			
+//			file = new FileInputStream(Constants.Path_TestData + Constants.File_TestData); 
+//		
+//		} catch (FileNotFoundException e) {}
+//			
+//		XSSFWorkbook workbook = null;
+//		try {
+//			
+//			workbook = new XSSFWorkbook(file);
+//			
+//		} catch (IOException e) {}
+//		
+//		XSSFSheet sheet = workbook.getSheetAt(0);
 		
-		} catch (FileNotFoundException e) {}
-			
-		XSSFWorkbook workbook = null;
-		try {
-			
-			workbook = new XSSFWorkbook(file);
-			
-		} catch (IOException e) {}
-		
-		XSSFSheet sheet = workbook.getSheetAt(0);
+		XSSFSheet sheet = xL.getExcelWSheet();
 		
 		for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
 		
-			test = report.startTest("DDT");
+			test = report.startTest("DDT" + i);
 			driver.get(Constants.Homepage);
 			test.log(LogStatus.INFO, "Site Opened");
-		
-			XSSFCell username = sheet.getRow(i).getCell(0);
-			XSSFCell password = sheet.getRow(i).getCell(1);
 			
-			String user = username.getStringCellValue();
-			String pass = password.getStringCellValue();
+			String user = xL.getCellData(i, 0);
+			String pass = xL.getCellData(i, 1);
 			
 			ind.navigate();
 			test.log(LogStatus.INFO, "Navigate to 'Add Users' page");
@@ -159,17 +157,16 @@ public class POMtest {
 			if (log.hopedFor.equals(log.checkStatus())) {
 				
 				test.log(LogStatus.PASS, "Successful Login");
-				
+				xL.setCellData("PASS", i, 2);
 			}	else {
 				
 				test.log(LogStatus.FAIL, "Unsuccessful Login");
+				xL.setCellData("FAIL", i, 2);
 			}
 			
 			
 			report.endTest(test);
-			assertEquals (log.hopedFor, log.checkStatus());
-			
-			sheet.getRow(i).getCell(3);
+			//assertEquals (log.hopedFor, log.checkStatus());
 			
 		}
 	}
