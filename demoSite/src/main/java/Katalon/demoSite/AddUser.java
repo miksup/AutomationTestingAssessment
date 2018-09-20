@@ -11,7 +11,15 @@ public class AddUser {
 	public void inputName(String text) {
 		
 		username.clear();
-		username.sendKeys(text);
+		if (text.length() <= 16) {
+			
+			username.sendKeys(text);
+		
+		} else {
+			
+			username.sendKeys(text.substring(0, 15));
+			
+		}
 		
 	}
 	
@@ -20,8 +28,17 @@ public class AddUser {
 	
 	public void inputPass(String text) {
 		
-		username.clear();
-		username.sendKeys(text);
+		password.clear();
+		
+		if (text.length() <= 8) {
+			
+			password.sendKeys(text);
+		
+		} else {
+			
+			password.sendKeys(text.substring(0, 7));
+			
+		}
 		
 	}
 	
